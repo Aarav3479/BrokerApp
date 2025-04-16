@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 public class UpdateUserRequest {
     private String username;
     private String email;
-    private String oldPassword; // Optional
-    private String newPassword; // Optional
+    private String oldPassword;
+    private String newPassword;
 }

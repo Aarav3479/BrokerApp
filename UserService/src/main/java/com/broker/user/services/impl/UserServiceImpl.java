@@ -1,5 +1,7 @@
 package com.broker.user.services.impl;
 
+import com.broker.user.DTO.RegistrationDTO.AuthResponse;
+import com.broker.user.DTO.RegistrationDTO.LoginRequest;
 import com.broker.user.DTO.RegistrationDTO.RegisterRequest;
 import com.broker.user.DTO.UserProfileDTO.UpdateUserRequest;
 import com.broker.user.DTO.UserProfileDTO.UserResponse;
@@ -47,14 +49,43 @@ public class UserServiceImpl implements UserService {
                 .map(user->new UserResponse(user.getUserId(),user.getUsername(),user.getEmail()))
                 .collect(Collectors.toList());
     }
-
     @Override
-    public void updatePassword(Long userId, UpdateUserRequest request) {
+    public AuthResponse login(LoginRequest request) {
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new RuntimeException("Invalid email or password"));
 
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            throw new RuntimeException("Invalid email or password");
+        }
+
+        // Normally you'd return a JWT token here
+        return new AuthResponse("mock-jwt-token-for-" + user.getUsername(),"bearer");
+    }
+    @Override
+    public UserResponse updateUser(Long userId, UpdateUserRequest request) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if(!passwordEncoder.matches(request.getOldPassword(), user.getPassword())) {
+            throw new RuntimeException("Invalid Password");
+        }
+
+        if (request.getUsername() != null) user.setUsername(request.getUsername());
+        if (request.getEmail() != null) user.setEmail(request.getEmail());
+        if (request.getNewPassword() != null) {
+            String encoded = passwordEncoder.encode(request.getNewPassword());
+            user.setPassword(encoded);
+        }
+
+        User updated = userRepository.save(user);
+        return UserMapper.toResponse(updated);
     }
 
     @Override
     public void deleteUser(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
+        userRepository.deleteById(userId);
     }
 }
