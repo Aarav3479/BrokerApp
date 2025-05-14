@@ -5,16 +5,19 @@ import com.broker.user.DTO.RegistrationDTO.LoginRequest;
 import com.broker.user.DTO.RegistrationDTO.RegisterRequest;
 import com.broker.user.DTO.UserProfileDTO.UpdateUserRequest;
 import com.broker.user.DTO.UserProfileDTO.UserResponse;
+import com.broker.user.DTO.KafkaDTO.UserCreatedEvent;
 import com.broker.user.Entities.User;
 import com.broker.user.mapper.UserMapper;
 import com.broker.user.repository.UserRepository;
 import com.broker.user.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,8 +29,8 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private final PasswordEncoder passwordEncoder;
 //    private final JwtService jwtService;
-//    private final KafkaTemplate<String, UserCreatedEvent> kafkaTemplate;
-
+    private final KafkaTemplate<String, UserCreatedEvent> kafkaTemplate;
+    private static final Logger logger = Logger.getLogger(UserServiceImpl.class.getName());
 
     @Override
     public UserResponse register(RegisterRequest request){
@@ -38,7 +41,17 @@ public class UserServiceImpl implements UserService {
         User user = UserMapper.toEntity(request, encodedPassword);
         User savedUser = userRepository.save(user);
 
-        //Send response to kafka
+        UserCreatedEvent event = new UserCreatedEvent(
+                savedUser.getUserId(),
+                savedUser.getEmail(),
+                savedUser.getUsername()
+        );
+
+
+        kafkaTemplate.send("user-created", event);
+        kafkaTemplate.send("user-created-portfolio", event);
+
+
 
         return UserMapper.toResponse(savedUser);
     }
