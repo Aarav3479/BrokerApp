@@ -71,7 +71,6 @@ public class UserServiceImpl implements UserService {
             throw new RuntimeException("Invalid email or password");
         }
 
-        // Normally you'd return a JWT token here
         return new AuthResponse("mock-jwt-token-for-" + user.getUsername(),"bearer");
     }
     @Override
