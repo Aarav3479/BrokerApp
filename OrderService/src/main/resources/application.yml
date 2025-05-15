@@ -11,3 +11,13 @@ spring:
     show-sql: true
   application:
     name: ORDER-SERVICE
+  kafka:
+    consumer:
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: '*'
+logging:
+  file:
+    name: logs/app.log
+  level:
+    root: INFO
