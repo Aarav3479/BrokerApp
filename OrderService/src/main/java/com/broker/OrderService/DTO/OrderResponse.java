@@ -7,7 +7,7 @@ import java.time.Instant;
 
 @Data
 public class OrderResponse {
-    private Long id;
+    private Long orderId;
     private Long userId;
     private String stockSymbol;
     private int quantity;

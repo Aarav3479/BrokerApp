@@ -37,7 +37,7 @@ public class OrderServiceImpl implements OrderService {
 
         Order saved = orderRepository.save(order);
         OrderPlacedEvent event = new OrderPlacedEvent(
-                saved.getId(), saved.getUserId(), saved.getStockSymbol(),
+                saved.getOrderId(), saved.getUserId(), saved.getStockSymbol(),
                 saved.getQuantity(), saved.getPrice(), saved.getType(),saved.getTimestamp()
         );
         kafkaTemplate.send("order-placed", event);
@@ -54,7 +54,7 @@ public class OrderServiceImpl implements OrderService {
 
     private OrderResponse toResponse(Order order) {
         OrderResponse res = new OrderResponse();
-        res.setId(order.getId());
+        res.setOrderId(order.getOrderId());
         res.setUserId(order.getUserId());
         res.setStockSymbol(order.getStockSymbol());
         res.setQuantity(order.getQuantity());
