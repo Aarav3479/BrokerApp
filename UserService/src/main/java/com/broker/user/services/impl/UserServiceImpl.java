@@ -74,8 +74,8 @@ public class UserServiceImpl implements UserService {
         return new AuthResponse("mock-jwt-token-for-" + user.getUsername(),"bearer");
     }
     @Override
-    public UserResponse updateUser(Long userId, UpdateUserRequest request) {
-        User user = userRepository.findById(userId)
+    public UserResponse updateUser(String email, UpdateUserRequest request) {
+        User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         if(!passwordEncoder.matches(request.getOldPassword(), user.getPassword())) {
@@ -83,7 +83,6 @@ public class UserServiceImpl implements UserService {
         }
 
         if (request.getUsername() != null) user.setUsername(request.getUsername());
-        if (request.getEmail() != null) user.setEmail(request.getEmail());
         if (request.getNewPassword() != null) {
             String encoded = passwordEncoder.encode(request.getNewPassword());
             user.setPassword(encoded);
@@ -94,10 +93,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteUser(Long userId) {
-        User user = userRepository.findById(userId)
+    public void deleteUser(String email) {
+        User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        userRepository.deleteById(userId);
+        userRepository.deleteById(user.getUserId());
     }
 }

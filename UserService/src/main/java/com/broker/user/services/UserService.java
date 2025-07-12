@@ -16,6 +16,6 @@ public interface UserService {
     UserResponse register(RegisterRequest request);
     List<UserResponse> getAllUsers();
     AuthResponse login(LoginRequest request);
-    UserResponse updateUser(Long userId, UpdateUserRequest request);
-    void deleteUser(Long userId);
+    UserResponse updateUser(String email, UpdateUserRequest request);
+    void deleteUser(String email);
 }
