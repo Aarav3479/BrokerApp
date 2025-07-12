@@ -9,6 +9,8 @@ import com.broker.user.services.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -37,16 +39,19 @@ public class UserController {
         return ResponseEntity.ok(auth);
     }
 
-    @PutMapping("/{email}")
+    @PutMapping
     public ResponseEntity<UserResponse> updateUser(
-            @PathVariable String email,
             @RequestBody @Valid UpdateUserRequest request) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
         UserResponse updatedUser = userService.updateUser(email, request);
         return ResponseEntity.ok(updatedUser);
     }
 
-    @DeleteMapping("/{email}")
-    public ResponseEntity<String> deleteUser(@PathVariable String email) {
+    @DeleteMapping
+    public ResponseEntity<String> deleteUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
         userService.deleteUser(email);
         return ResponseEntity.ok("User deleted successfully");
     }
