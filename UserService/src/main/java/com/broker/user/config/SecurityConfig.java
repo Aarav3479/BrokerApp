@@ -54,16 +54,21 @@ public class SecurityConfig {
     }
 
 
+    //Note: Whenever we declare a class as bean, we tell spring to store the instance of the class returned
+    //      into spring container and use the same instance everywhere throughout the application
+
+    //      For example, we have two controllers, and in both controllers we Autowire PasswordEncoder object. Same
+    //      instance of PasswordEncoder will be used by both the controllers
 
 
     @Bean
     public AuthenticationManager authenticationManager(
             CustomUserDetailsService customUserDetailsService,
-            PasswordEncoder passwordEncoder) {
+            PasswordEncoder passwordEncoder) {  //Note that this is method injection. We have injected CustomUserDetailsService and PasswordEncoder into DaoAuthenticationProvider
         DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider(passwordEncoder);
         authenticationProvider.setUserDetailsService(customUserDetailsService);
 
-        return new ProviderManager(authenticationProvider);
+        return new ProviderManager(authenticationProvider); //Note that AuthenticationManager is an interface and ProviderManager implements it. It also overrides the authenticate method of AuthenticationManager interface
     }
 
 }
