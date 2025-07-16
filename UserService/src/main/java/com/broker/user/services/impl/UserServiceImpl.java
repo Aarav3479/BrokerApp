@@ -10,9 +10,15 @@ import com.broker.user.Entities.User;
 import com.broker.user.mapper.UserMapper;
 import com.broker.user.repository.UserRepository;
 import com.broker.user.services.UserService;
+import com.broker.user.utils.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -28,8 +34,18 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
     @Autowired
     private final PasswordEncoder passwordEncoder;
-//    private final JwtService jwtService;
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private CustomUserDetailsService customUserDetailsService;
+
+    @Autowired
+    private JwtUtil jwtUtil;
+
     private final KafkaTemplate<String, UserCreatedEvent> kafkaTemplate;
+
     private static final Logger logger = Logger.getLogger(UserServiceImpl.class.getName());
 
     @Override
@@ -64,18 +80,14 @@ public class UserServiceImpl implements UserService {
     }
     @Override
     public AuthResponse login(LoginRequest request) {
-        User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new RuntimeException("Invalid email or password"));
-
-        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new RuntimeException("Invalid email or password");
-        }
-
-        return new AuthResponse("mock-jwt-token-for-" + user.getUsername(),"bearer");
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
+        UserDetails userDetails = customUserDetailsService.loadUserByUsername(request.getEmail());
+        String jwt = jwtUtil.generateToken(userDetails.getUsername());
+        return new AuthResponse(jwt,"bearer");
     }
     @Override
-    public UserResponse updateUser(Long userId, UpdateUserRequest request) {
-        User user = userRepository.findById(userId)
+    public UserResponse updateUser(String email, UpdateUserRequest request) {
+        User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         if(!passwordEncoder.matches(request.getOldPassword(), user.getPassword())) {
@@ -83,7 +95,6 @@ public class UserServiceImpl implements UserService {
         }
 
         if (request.getUsername() != null) user.setUsername(request.getUsername());
-        if (request.getEmail() != null) user.setEmail(request.getEmail());
         if (request.getNewPassword() != null) {
             String encoded = passwordEncoder.encode(request.getNewPassword());
             user.setPassword(encoded);
@@ -94,10 +105,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteUser(Long userId) {
-        User user = userRepository.findById(userId)
+    public void deleteUser(String email) {
+        User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        userRepository.deleteById(userId);
+        userRepository.deleteById(user.getUserId());
     }
 }

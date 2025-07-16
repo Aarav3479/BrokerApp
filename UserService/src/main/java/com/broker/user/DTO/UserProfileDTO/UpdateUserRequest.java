@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UpdateUserRequest {
     private String username;
-    private String email;
     private String oldPassword;
     private String newPassword;
 }
