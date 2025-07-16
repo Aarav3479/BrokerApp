@@ -10,7 +10,6 @@ public class UserMapper {
         user.setUsername(request.getUsername());
         user.setEmail(request.getEmail());
         user.setPassword(encodedPassword);
-//        user.setVerified(false);
         return user;
     }
 
