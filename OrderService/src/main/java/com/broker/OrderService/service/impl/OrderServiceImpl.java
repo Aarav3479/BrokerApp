@@ -30,17 +30,17 @@ public class OrderServiceImpl implements OrderService {
         Order order = OrderMapper.toEntity(request,Instant.now());
         Order saved = orderRepository.save(order);
         OrderPlacedEvent event = new OrderPlacedEvent(
-                saved.getOrderId(), saved.getUserId(), saved.getStockSymbol(),
+                saved.getOrderId(), saved.getEmail(), saved.getStockSymbol(),
                 saved.getQuantity(), saved.getPrice(), saved.getType(),saved.getTimestamp()
         );
-        kafkaTemplate.send("order-placed", event);
+        //kafkaTemplate.send("order-placed", event);
         return OrderMapper.toResponse(saved);
     }
 
     @Override
     public List<OrderResponse> getAllOrders() {
         return orderRepository.findAll().stream()
-                .map(order->new OrderResponse(order.getOrderId(),order.getUserId(),order.getStockSymbol(),
+                .map(order->new OrderResponse(order.getOrderId(),order.getEmail(),order.getStockSymbol(),
                         order.getQuantity(),order.getPrice(),order.getType(),order.getTimestamp()))
                 .collect(Collectors.toList());
     }

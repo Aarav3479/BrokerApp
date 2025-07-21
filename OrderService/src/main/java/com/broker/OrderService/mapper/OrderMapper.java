@@ -9,7 +9,7 @@ import java.time.Instant;
 public class OrderMapper {
     public static Order toEntity(OrderRequest request, Instant timestamp) {
         Order order = new Order();
-        order.setUserId(request.getUserId());
+        order.setEmail(request.getEmail());
         order.setStockSymbol(request.getStockSymbol());
         order.setQuantity(request.getQuantity());
         order.setType(request.getType());
@@ -19,7 +19,7 @@ public class OrderMapper {
     }
 
     public static OrderResponse toResponse(Order order) {
-        return new OrderResponse(order.getOrderId(),order.getUserId(),order.getStockSymbol(),
+        return new OrderResponse(order.getOrderId(),order.getEmail(),order.getStockSymbol(),
                 order.getQuantity(), order.getPrice(), order.getType(),order.getTimestamp());
     }
 }

@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class OrderRequest {
-    private Long userId;
+    private String email;
     private String stockSymbol;
     private int quantity;
     private double price;

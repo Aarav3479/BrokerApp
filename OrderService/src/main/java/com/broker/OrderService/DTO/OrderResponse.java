@@ -12,7 +12,7 @@ import java.time.Instant;
 @AllArgsConstructor
 public class OrderResponse {
     private Long orderId;
-    private Long userId;
+    private String email;
     private String stockSymbol;
     private int quantity;
     private double price;
