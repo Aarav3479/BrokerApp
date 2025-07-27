@@ -13,11 +13,14 @@ import java.time.Instant;
 public class trade {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long tradeId;
     private Long orderId;
-    private Long userId;
+    private String email;
     private String stockSymbol;
     private int quantity;
     private double price;
     private Instant timestamp;
+    public enum OrderType {
+        BUY, SELL
+    }
 }

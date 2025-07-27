@@ -62,13 +62,8 @@ public class UserServiceImpl implements UserService {
                 savedUser.getEmail(),
                 savedUser.getUsername()
         );
-
-
         kafkaTemplate.send("user-created", event);
         kafkaTemplate.send("user-created-portfolio", event);
-
-
-
         return UserMapper.toResponse(savedUser);
     }
 

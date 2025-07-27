@@ -33,7 +33,7 @@ public class OrderServiceImpl implements OrderService {
                 saved.getOrderId(), saved.getEmail(), saved.getStockSymbol(),
                 saved.getQuantity(), saved.getPrice(), saved.getType(),saved.getTimestamp()
         );
-        //kafkaTemplate.send("order-placed", event);
+        kafkaTemplate.send("order-placed", event);
         return OrderMapper.toResponse(saved);
     }
 
