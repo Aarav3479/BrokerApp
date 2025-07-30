@@ -19,7 +19,8 @@ public class trade {
     private String stockSymbol;
     private int quantity;
     private double price;
-    private Instant timestamp;
+    private Instant orderTimestamp;
+    private Instant tradeTimestamp;
     public enum OrderType {
         BUY, SELL
     }

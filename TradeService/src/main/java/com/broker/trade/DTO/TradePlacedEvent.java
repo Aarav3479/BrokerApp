@@ -10,12 +10,13 @@ import java.time.Instant;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class OrderPlacedEvent {
+public class TradePlacedEvent {
     private Long orderId;
     private String email;
     private String stockSymbol;
     private int quantity;
     private double price;
-    private trade.OrderType type;
+    private Instant tradeTimestamp;
     private Instant orderTimestamp;
+
 }
