@@ -7,47 +7,56 @@ import lombok.Getter;
 import org.springframework.stereotype.Component;
 import com.broker.trade.TradeComparators.BuyComparator;
 
+import java.util.Map;
 import java.util.PriorityQueue;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Component
 @Getter
 public class OrderQueueService {
 
-    private final PriorityQueue<OrderPlacedEvent> buyQueue = new PriorityQueue<OrderPlacedEvent>(new BuyComparator());
-    private final PriorityQueue<OrderPlacedEvent> sellQueue = new PriorityQueue<OrderPlacedEvent>(new SellComparator());
+    private final Map<String,StockOrderBook> orderBooks = new ConcurrentHashMap<>();
 
-    public OrderPlacedEvent pollBuyOrder() {
-        return buyQueue.poll();
-    }
-
-    public OrderPlacedEvent pollSellOrder() {
-        return sellQueue.poll();
-    }
-
-    public void offerBuyOrder(OrderPlacedEvent order) {
-        buyQueue.offer(order);
-    }
-
-    public void offerSellOrder(OrderPlacedEvent order) {
-        sellQueue.offer(order);
-    }
-    public boolean hasMatchingOrders() {
-        return !buyQueue.isEmpty() && !sellQueue.isEmpty();
-    }
-
-    public OrderPlacedEvent peekBuyOrder() {
-        return buyQueue.peek();
-    }
-
-    public OrderPlacedEvent peekSellOrder() {
-        return sellQueue.peek();
-    }
     public void addOrder(OrderPlacedEvent order){
+        StockOrderBook book = orderBooks.computeIfAbsent(order.getStockSymbol(),k->(new StockOrderBook()));
         if(order.getType() == trade.OrderType.BUY){
-            buyQueue.add(order);
+            book.getBuyQueue().offer(order);
         }
         else{
-            sellQueue.add(order);
+            book.getSellQueue().offer(order);
         }
+    }
+
+    public OrderPlacedEvent pollBuyOrder(String stockSymbol) {
+        return orderBooks.get(stockSymbol).getBuyQueue().poll();
+    }
+
+    public OrderPlacedEvent pollSellOrder(String stockSymbol) {
+        return orderBooks.get(stockSymbol).getSellQueue().poll();
+    }
+
+    public void offerBuyOrder(OrderPlacedEvent order, String stockSymbol) {
+        orderBooks.get(stockSymbol).getBuyQueue().offer(order);
+    }
+
+    public void offerSellOrder(OrderPlacedEvent order, String stockSymbol) {
+        orderBooks.get(stockSymbol).getSellQueue().offer(order);
+    }
+    public boolean IsOrderPlaceable(String stockSymbol) {
+        if(orderBooks.get(stockSymbol).getBuyQueue().isEmpty() || orderBooks.get(stockSymbol).getSellQueue().isEmpty()){
+            return false;
+        }
+        if(orderBooks.get(stockSymbol).getBuyQueue().peek().getPrice()>=orderBooks.get(stockSymbol).getSellQueue().peek().getPrice()){
+            return true;
+        }
+        return false;
+    }
+
+    public OrderPlacedEvent peekBuyOrder(String stockSymbol) {
+        return orderBooks.get(stockSymbol).getBuyQueue().peek();
+    }
+
+    public OrderPlacedEvent peekSellOrder(String stockSymbol) {
+        return orderBooks.get(stockSymbol).getSellQueue().peek();
     }
 }
