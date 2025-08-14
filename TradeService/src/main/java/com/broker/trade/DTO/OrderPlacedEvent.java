@@ -1,7 +1,9 @@
-package com.broker.OrderService.DTO;
+package com.broker.trade.DTO;
 
-import com.broker.OrderService.Entity.Order;
-import lombok.*;
+import com.broker.trade.Entity.trade;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.Instant;
 
@@ -14,6 +16,6 @@ public class OrderPlacedEvent {
     private String stockSymbol;
     private int quantity;
     private double price;
-    private Order.OrderType type;
-    private Instant timestamp;
+    private trade.OrderType type;
+    private Instant orderTimestamp;
 }

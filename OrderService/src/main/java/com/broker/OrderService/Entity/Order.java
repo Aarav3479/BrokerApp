@@ -19,8 +19,7 @@ public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long orderId;
-
-    private Long userId;
+    private String email;
     private String stockSymbol;
     private int quantity;
     private double price;

@@ -1,6 +1,6 @@
-package com.broker.OrderService.DTO;
+package com.broker.trade.DTO;
 
-import com.broker.OrderService.Entity.Order;
+import com.broker.trade.Entity.trade;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,12 +10,13 @@ import java.time.Instant;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class OrderResponse {
+public class TradePlacedEvent {
     private Long orderId;
     private String email;
     private String stockSymbol;
     private int quantity;
     private double price;
-    private Order.OrderType type;
-    private Instant timestamp;
+    private Instant tradeTimestamp;
+    private Instant orderTimestamp;
+
 }
