@@ -14,7 +14,7 @@ import java.util.PriorityQueue;
 @AllArgsConstructor
 public class StockOrderBook {
 
-    private final PriorityQueue<OrderPlacedEvent> buyQueue = new PriorityQueue<OrderPlacedEvent>(new BuyComparator());
-    private final PriorityQueue<OrderPlacedEvent> sellQueue = new PriorityQueue<OrderPlacedEvent>(new SellComparator());
+    private PriorityQueue<OrderPlacedEvent> buyQueue = new PriorityQueue<OrderPlacedEvent>(new BuyComparator());
+    private PriorityQueue<OrderPlacedEvent> sellQueue = new PriorityQueue<OrderPlacedEvent>(new SellComparator());
 
 }

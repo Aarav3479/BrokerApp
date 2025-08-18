@@ -1,25 +1,22 @@
 package com.broker.trade.Component;
 
 import com.broker.trade.DTO.OrderPlacedEvent;
-import com.broker.trade.Entity.trade;
-import com.broker.trade.TradeComparators.SellComparator;
+import com.broker.trade.Entity.Trade;
 import lombok.Getter;
 import org.springframework.stereotype.Component;
-import com.broker.trade.TradeComparators.BuyComparator;
 
 import java.util.Map;
-import java.util.PriorityQueue;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Component
 @Getter
 public class OrderQueueService {
 
-    private final Map<String,StockOrderBook> orderBooks = new ConcurrentHashMap<>();
+    private final Map<String,StockOrderBook> orderBooks = new ConcurrentHashMap<>(); //populate it with all orders in the starting itself
 
     public void addOrder(OrderPlacedEvent order){
         StockOrderBook book = orderBooks.computeIfAbsent(order.getStockSymbol(),k->(new StockOrderBook()));
-        if(order.getType() == trade.OrderType.BUY){
+        if(order.getType() == Trade.OrderType.BUY){
             book.getBuyQueue().offer(order);
         }
         else{

@@ -1,6 +1,7 @@
 package com.broker.OrderService.DTO;
 
 import com.broker.OrderService.Entity.Order;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
 import java.time.Instant;
@@ -15,5 +16,5 @@ public class OrderPlacedEvent {
     private int quantity;
     private double price;
     private Order.OrderType type;
-    private Instant timestamp;
+    private Instant orderTimestamp;
 }

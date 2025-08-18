@@ -33,8 +33,6 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-
-
     @PostMapping("/register")
     public ResponseEntity<UserResponse> register(@RequestBody @Valid RegisterRequest request) {
         UserResponse user = userService.register(request);
