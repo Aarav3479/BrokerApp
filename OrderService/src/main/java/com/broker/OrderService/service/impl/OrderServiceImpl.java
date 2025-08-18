@@ -44,4 +44,11 @@ public class OrderServiceImpl implements OrderService {
                         order.getQuantity(),order.getPrice(),order.getType(),order.getTimestamp()))
                 .collect(Collectors.toList());
     }
+    @Override
+    public void deleteOrder(Long orderId){
+        Order order = orderRepository.findByOrderId(orderId)
+                .orElseThrow(() -> new RuntimeException("Order not found"));
+
+        orderRepository.deleteById(order.getOrderId());
+    }
 }

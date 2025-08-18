@@ -27,4 +27,10 @@ public class OrderController {
     public ResponseEntity<List<OrderResponse>> getOrders() {
         return ResponseEntity.ok(orderService.getAllOrders());
     }
+
+    @DeleteMapping("/{orderId}")
+    public ResponseEntity<String> deleteOrder(@PathVariable Long orderId) {
+        orderService.deleteOrder(orderId);
+        return ResponseEntity.ok("Order with ID " + orderId + " deleted successfully.");
+    }
 }
