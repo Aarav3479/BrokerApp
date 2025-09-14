@@ -51,4 +51,7 @@ public class OrderServiceImpl implements OrderService {
 
         orderRepository.deleteById(order.getOrderId());
     }
+    public void deleteAllOrders(){
+        orderRepository.deleteAll();
+    }
 }

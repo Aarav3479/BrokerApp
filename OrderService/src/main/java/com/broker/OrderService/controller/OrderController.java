@@ -33,4 +33,10 @@ public class OrderController {
         orderService.deleteOrder(orderId);
         return ResponseEntity.ok("Order with ID " + orderId + " deleted successfully.");
     }
+
+    @DeleteMapping
+    public ResponseEntity<String> deleteAllTrades(){
+        orderService.deleteAllOrders();
+        return ResponseEntity.ok("All Orders deleted successfully");
+    }
 }
