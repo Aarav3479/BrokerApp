@@ -11,11 +11,13 @@ import java.time.Instant;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@IdClass(TradeKey.class)
 public class Trade {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long tradeId;
-    private Long orderId;
+    private long tradeId;
+    @Id
+    private long orderId;
     private String email;
     private String stockSymbol;
     private int quantity;

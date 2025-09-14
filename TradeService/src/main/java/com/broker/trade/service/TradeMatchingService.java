@@ -23,7 +23,7 @@ public class TradeMatchingService {
     @Autowired
     private TradeRepository tradeRepository;
 
-    public ResponseEntity<TradePair> matchOrders(OrderPlacedEvent order){
+    public void matchOrders(OrderPlacedEvent order){
 
         while(orderQueueService.IsOrderPlaceable(order.getStockSymbol())){
             OrderPlacedEvent buyOrder = orderQueueService.pollBuyOrder(order.getStockSymbol());
@@ -63,18 +63,20 @@ public class TradeMatchingService {
                     now,
                     sellOrder.getOrderTimestamp()
             );
-            Trade buyEntity = TradeMapper.toEntity(buyResponse);
-            Trade sellEntity = TradeMapper.toEntity(sellResponse);
+            long newTradeId = tradeRepository.getNewTradeId();
+            Trade buyEntity = TradeMapper.toEntity(buyResponse,newTradeId);
+            Trade sellEntity = TradeMapper.toEntity(sellResponse,newTradeId);
             tradeRepository.save(buyEntity);
             tradeRepository.save(sellEntity);
-            return ResponseEntity.ok(new TradePair(buyResponse,sellResponse));
 
             //kafka --> portfolio service
 
         }
-        return null;
     }
     public List<Trade> getAllTrades(){
         return tradeRepository.findAll();
+    }
+    public void deleteAllTrades(){
+        tradeRepository.deleteAll();
     }
 }

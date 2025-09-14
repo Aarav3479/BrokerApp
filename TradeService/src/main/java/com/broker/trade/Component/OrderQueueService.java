@@ -12,7 +12,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Getter
 public class OrderQueueService {
 
-    private final Map<String,StockOrderBook> orderBooks = new ConcurrentHashMap<>(); //populate it with all orders in the starting itself
+    private final Map<String,StockOrderBook> orderBooks = new ConcurrentHashMap<>();
 
     public void addOrder(OrderPlacedEvent order){
         StockOrderBook book = orderBooks.computeIfAbsent(order.getStockSymbol(),k->(new StockOrderBook()));

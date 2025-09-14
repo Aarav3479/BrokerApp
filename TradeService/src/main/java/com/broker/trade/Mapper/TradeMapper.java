@@ -4,8 +4,10 @@ import com.broker.trade.DTO.TradePlacedEvent;
 import com.broker.trade.Entity.Trade;
 
 public class TradeMapper {
-    public static Trade toEntity(TradePlacedEvent event){
+
+    public static Trade toEntity(TradePlacedEvent event, long newTradeId){
         Trade trade = new Trade();
+        trade.setTradeId(newTradeId);
         trade.setOrderId(event.getOrderId());
         trade.setQuantity(event.getQuantity());
         trade.setPrice(event.getPrice());
@@ -16,4 +18,5 @@ public class TradeMapper {
         trade.setOrderType(event.getType());
         return trade;
     }
+
 }
