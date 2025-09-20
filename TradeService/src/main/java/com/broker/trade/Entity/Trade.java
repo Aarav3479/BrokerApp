@@ -1,6 +1,5 @@
 package com.broker.trade.Entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.*;
 

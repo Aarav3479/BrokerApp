@@ -1,6 +1,5 @@
-package com.broker.trade.DTO;
+package com.broker.portfolio.DTO;
 
-import com.broker.trade.Entity.Trade;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,8 +15,10 @@ public class TradePlacedEvent {
     private String stockSymbol;
     private int quantity;
     private double price;
-    private Trade.OrderType type;
+    private OrderType type;
     private Instant tradeTimestamp;
     private Instant orderTimestamp;
-
+    public enum OrderType {
+        BUY, SELL
+    }
 }

@@ -23,7 +23,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 @Service
@@ -45,8 +44,6 @@ public class UserServiceImpl implements UserService {
     private JwtUtil jwtUtil;
 
     private final KafkaTemplate<String, UserCreatedEvent> kafkaTemplate;
-
-    private static final Logger logger = Logger.getLogger(UserServiceImpl.class.getName());
 
     @Override
     public UserResponse register(RegisterRequest request){
