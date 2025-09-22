@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface TradeRepository extends JpaRepository<Trade, Long> {
     @Query(value = "SELECT nextval('trade_id_seq')", nativeQuery = true)
-    long getNewTradeId();
+    Long getNewTradeId();
 }

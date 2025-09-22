@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class TradeEventListener {
-    @KafkaListener(topics = "trade-placed", groupId = "portfolio-service", containerFactory = "kafkaListenerContainerFactory")
+    @KafkaListener(topics = "trade-placed", groupId = "portfolio-trade-service", containerFactory = "kafkaTradeListenerContainerFactory")
     public void listen(TradePlacedEvent trade){
         System.out.println(trade);
     }

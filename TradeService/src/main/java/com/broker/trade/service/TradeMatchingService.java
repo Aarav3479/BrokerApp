@@ -66,7 +66,7 @@ public class TradeMatchingService {
                     now,
                     sellOrder.getOrderTimestamp()
             );
-            long newTradeId = tradeRepository.getNewTradeId();
+            Long newTradeId = tradeRepository.getNewTradeId();
             Trade buyEntity = TradeMapper.toEntity(buyResponse,newTradeId);
             Trade sellEntity = TradeMapper.toEntity(sellResponse,newTradeId);
             tradeRepository.save(buyEntity);

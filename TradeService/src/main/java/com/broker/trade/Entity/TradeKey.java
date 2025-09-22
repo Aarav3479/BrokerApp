@@ -10,6 +10,6 @@ import java.io.Serializable;
 @AllArgsConstructor
 @EqualsAndHashCode
 public class TradeKey implements Serializable {
-    private long tradeId;
-    private long orderId;
+    private Long tradeId;
+    private Long orderId;
 }

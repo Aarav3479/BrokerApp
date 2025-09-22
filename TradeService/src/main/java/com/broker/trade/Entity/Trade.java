@@ -14,9 +14,9 @@ import java.time.Instant;
 public class Trade {
 
     @Id
-    private long tradeId;
+    private Long tradeId;
     @Id
-    private long orderId;
+    private Long orderId;
     private String email;
     private String stockSymbol;
     private int quantity;

@@ -5,7 +5,7 @@ import com.broker.trade.Entity.Trade;
 
 public class TradeMapper {
 
-    public static Trade toEntity(TradePlacedEvent event, long newTradeId){
+    public static Trade toEntity(TradePlacedEvent event, Long newTradeId){
         Trade trade = new Trade();
         trade.setTradeId(newTradeId);
         trade.setOrderId(event.getOrderId());
