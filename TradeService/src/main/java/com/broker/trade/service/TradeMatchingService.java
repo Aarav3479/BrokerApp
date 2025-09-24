@@ -9,6 +9,7 @@ import com.broker.trade.Entity.Trade;
 import com.broker.trade.repository.TradeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 
@@ -22,6 +23,8 @@ public class TradeMatchingService {
     private OrderQueueService orderQueueService;
     @Autowired
     private TradeRepository tradeRepository;
+    @Autowired
+    private KafkaTemplate<String, TradePlacedEvent> kafkaTemplate;
 
     public void matchOrders(OrderPlacedEvent order){
 
@@ -63,13 +66,14 @@ public class TradeMatchingService {
                     now,
                     sellOrder.getOrderTimestamp()
             );
-            long newTradeId = tradeRepository.getNewTradeId();
+            Long newTradeId = tradeRepository.getNewTradeId();
             Trade buyEntity = TradeMapper.toEntity(buyResponse,newTradeId);
             Trade sellEntity = TradeMapper.toEntity(sellResponse,newTradeId);
             tradeRepository.save(buyEntity);
             tradeRepository.save(sellEntity);
 
-            //kafka --> portfolio service
+            kafkaTemplate.send("trade-placed", buyResponse);
+            kafkaTemplate.send("trade-placed", sellResponse);
 
         }
     }

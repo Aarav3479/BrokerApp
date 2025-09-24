@@ -1,31 +1,23 @@
-package com.broker.trade.Entity;
+package com.broker.portfolio.DTO;
 
-import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.Instant;
 
-@Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-@IdClass(TradeKey.class)
-public class Trade {
-
-    @Id
-    private Long tradeId;
-    @Id
+public class TradePlacedEvent {
     private Long orderId;
     private String email;
     private String stockSymbol;
     private int quantity;
     private double price;
-    private Instant orderTimestamp;
+    private OrderType type;
     private Instant tradeTimestamp;
-    @Enumerated(EnumType.STRING)
-    private OrderType orderType;
-
+    private Instant orderTimestamp;
     public enum OrderType {
         BUY, SELL
     }

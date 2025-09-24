@@ -1,7 +1,6 @@
 package com.broker.trade.DTO;
 
 import com.broker.trade.Entity.Trade;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

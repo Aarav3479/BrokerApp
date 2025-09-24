@@ -16,6 +16,7 @@ import java.util.List;
 @RequestMapping("/api/trades")
 @RequiredArgsConstructor
 public class TradeController {
+
     @Autowired
     private TradeMatchingService tradeMatchingService;
 
