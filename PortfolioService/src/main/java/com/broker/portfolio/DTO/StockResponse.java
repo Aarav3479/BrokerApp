@@ -8,8 +8,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class StockResponse {
-    private Long id;
+    private Long stockId;
     private String stockSymbol;
     private Integer quantity;
     private Double averagePrice;
+    private Long portfolioId;
 }

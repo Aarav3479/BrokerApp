@@ -23,6 +23,6 @@ public class Portfolio {
     private Double totalValue;
     private String email;
     private Instant lastUpdated;
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "portfolio")
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true ,fetch = FetchType.LAZY, mappedBy = "portfolio")
     private List<PortfolioStock> stocks;
 }

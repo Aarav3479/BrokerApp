@@ -13,7 +13,7 @@ public class PortfolioStock {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long stockId;
 
     private String stockSymbol;
 
