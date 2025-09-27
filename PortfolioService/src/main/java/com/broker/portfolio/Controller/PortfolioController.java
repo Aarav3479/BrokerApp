@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/portfolio")
@@ -23,7 +23,7 @@ public class PortfolioController {
     }
 
     @GetMapping
-    public ResponseEntity<List<PortfolioResponse>> getAllPortfolios() {
+    public ResponseEntity<Set<PortfolioResponse>> getAllPortfolios() {
         return ResponseEntity.ok(portfolioService.getAllPortfolios());
     }
 

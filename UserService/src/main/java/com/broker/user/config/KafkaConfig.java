@@ -1,6 +1,7 @@
 package com.broker.user.config;
 
 import com.broker.user.DTO.KafkaDTO.UserCreatedEvent;
+import com.broker.user.DTO.KafkaDTO.UserDeletedEvent;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.context.annotation.Bean;
@@ -16,7 +17,7 @@ import java.util.Map;
 @Configuration
 public class KafkaConfig {
     @Bean
-    public ProducerFactory<String, UserCreatedEvent> producerFactory() {
+    public ProducerFactory<String, UserCreatedEvent> producerFactory1() {
         Map<String, Object> configProps = new HashMap<>();
         configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
         configProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
@@ -27,7 +28,23 @@ public class KafkaConfig {
     }
 
     @Bean
-    public KafkaTemplate<String, UserCreatedEvent> kafkaTemplate() {
-        return new KafkaTemplate<>(producerFactory());
+    public KafkaTemplate<String, UserCreatedEvent> kafkaTemplate1() {
+        return new KafkaTemplate<>(producerFactory1());
+    }
+
+    @Bean
+    public ProducerFactory<String, UserDeletedEvent> producerFactory2() {
+        Map<String, Object> configProps = new HashMap<>();
+        configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+        configProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        configProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
+        configProps.put(JsonSerializer.ADD_TYPE_INFO_HEADERS, false);
+
+        return new DefaultKafkaProducerFactory<>(configProps);
+    }
+
+    @Bean
+    public KafkaTemplate<String, UserDeletedEvent> kafkaTemplate2() {
+        return new KafkaTemplate<>(producerFactory2());
     }
 }

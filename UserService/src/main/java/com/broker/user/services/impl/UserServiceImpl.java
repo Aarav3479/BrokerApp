@@ -1,5 +1,6 @@
 package com.broker.user.services.impl;
 
+import com.broker.user.DTO.KafkaDTO.UserDeletedEvent;
 import com.broker.user.DTO.RegistrationDTO.AuthResponse;
 import com.broker.user.DTO.RegistrationDTO.LoginRequest;
 import com.broker.user.DTO.RegistrationDTO.RegisterRequest;
@@ -43,7 +44,11 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private JwtUtil jwtUtil;
 
-    private final KafkaTemplate<String, UserCreatedEvent> kafkaTemplate;
+    @Autowired
+    private final KafkaTemplate<String, UserCreatedEvent> kafkaTemplate1;
+
+    @Autowired
+    private final KafkaTemplate<String, UserDeletedEvent> kafkaTemplate2;
 
     @Override
     public UserResponse register(RegisterRequest request){
@@ -59,8 +64,7 @@ public class UserServiceImpl implements UserService {
                 savedUser.getEmail(),
                 savedUser.getUsername()
         );
-        kafkaTemplate.send("user-created", event);
-        kafkaTemplate.send("user-created-portfolio", event);
+        kafkaTemplate1.send("user-created", event);
         return UserMapper.toResponse(savedUser);
     }
 
@@ -101,6 +105,12 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
+        UserDeletedEvent userDeletedEvent = UserDeletedEvent.builder()
+                                                                    .userId(user.getUserId())
+                                                                    .email(user.getEmail())
+                                                                    .username(user.getUsername())
+                                                                    .build();
         userRepository.deleteById(user.getUserId());
+        kafkaTemplate2.send("user-deleted", userDeletedEvent);
     }
 }

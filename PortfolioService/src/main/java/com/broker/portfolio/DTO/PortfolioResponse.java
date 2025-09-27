@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.Instant;
-import java.util.List;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -16,5 +16,5 @@ public class PortfolioResponse {
     private String email;
     private Double totalValue;
     private Instant lastUpdated;
-    private List<StockResponse> stocks;
+    private Set<StockResponse> stocks;
 }

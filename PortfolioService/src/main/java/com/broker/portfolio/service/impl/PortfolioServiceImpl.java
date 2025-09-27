@@ -6,11 +6,12 @@ import com.broker.portfolio.Mapper.EntityMapper;
 import com.broker.portfolio.repository.PortfolioRepository;
 import com.broker.portfolio.service.PortfolioService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
+@Service
 public class PortfolioServiceImpl implements PortfolioService {
 
     @Autowired
@@ -26,11 +27,11 @@ public class PortfolioServiceImpl implements PortfolioService {
     }
 
     @Override
-    public List<PortfolioResponse> getAllPortfolios() {
-        List<Portfolio> portfolioList = portfolioRepository.findAllWithStocks();
-        return portfolioList.stream()
+    public Set<PortfolioResponse> getAllPortfolios() {
+        return portfolioRepository.findAllWithStocks()
+                .stream()
                 .map(EntityMapper::EntityToPortfolioResponse)
-                .toList();
+                .collect(Collectors.toSet());
     }
 
     @Override
