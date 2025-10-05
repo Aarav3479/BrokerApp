@@ -1,9 +1,8 @@
 package com.broker.OrderService.service.impl;
 
-import com.broker.OrderService.DTO.OrderPlacedEvent;
-import com.broker.OrderService.DTO.OrderRequest;
-import com.broker.OrderService.DTO.OrderResponse;
+import com.broker.OrderService.DTO.*;
 import com.broker.OrderService.Entity.Order;
+import com.broker.OrderService.FeignClient.PortfolioClient;
 import com.broker.OrderService.mapper.OrderMapper;
 import com.broker.OrderService.repository.OrderRepository;
 import com.broker.OrderService.service.OrderService;
@@ -21,12 +20,24 @@ import java.util.stream.Collectors;
 public class OrderServiceImpl implements OrderService {
 
     @Autowired
+    private PortfolioClient portfolioClient;
+    @Autowired
     private OrderRepository orderRepository;
     @Autowired
     private KafkaTemplate<String, OrderPlacedEvent> kafkaTemplate;
 
     @Override
     public OrderResponse placeOrder(OrderRequest request) {
+        PortfolioResponse portfolio = portfolioClient.getPortfolioWithEmail(request.getEmail());
+        if(request.getType() == Order.OrderType.SELL){
+            StockResponse stockResponse = portfolio.getStocks().stream()
+                                               .filter(s -> s.getStockSymbol().equals(request.getStockSymbol()))
+                                               .findAny()
+                                               .orElseThrow();
+            if(stockResponse.getQuantity() < request.getQuantity()){
+                throw new RuntimeException("Cannot place sell order for " + request.getStockSymbol() + " above " + stockResponse.getQuantity() + " stocks");
+            }
+        }
         Order order = OrderMapper.toEntity(request,Instant.now());
         Order saved = orderRepository.save(order);
         OrderPlacedEvent event = new OrderPlacedEvent(

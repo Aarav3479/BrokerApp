@@ -9,6 +9,7 @@ import com.broker.portfolio.repository.PortfolioRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 import java.util.Set;
@@ -20,6 +21,7 @@ public class StockEventService {
     @Autowired
     private PortfolioRepository portfolioRepository;
 
+    @Transactional
     public void addTradeToPortfolio(TradePlacedEvent event){
         Optional<Portfolio> portfolio = portfolioRepository.findByEmail(event.getEmail());
         if(portfolio.isEmpty()){
@@ -36,7 +38,7 @@ public class StockEventService {
         Set<PortfolioStock> stockList = portfolio.get().getStocks();
         PortfolioStock portfolioStock = stockList.stream()
                 .filter(s -> s.getStockSymbol().equals(event.getStockSymbol()))
-                .findFirst()
+                .findAny()
                 .orElse(null);
 
         StockResponse stockResponse;

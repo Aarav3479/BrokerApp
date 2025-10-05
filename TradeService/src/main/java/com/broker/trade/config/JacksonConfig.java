@@ -16,6 +16,7 @@ public class JacksonConfig {
 
         SimpleModule module = new SimpleModule();
         module.addSerializer(Instant.class, new InstantToMillisSerializer());
+        module.addDeserializer(Instant.class, new MillisToInstantDeserializer());
         mapper.registerModule(module);
 
         return mapper;
