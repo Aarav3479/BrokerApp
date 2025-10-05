@@ -1,14 +1,12 @@
-package com.broker.user.DTO.KafkaDTO;
+package com.broker.portfolio.DTO;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 public class UserDeletedEvent {
     private Long userId;
     private String email;

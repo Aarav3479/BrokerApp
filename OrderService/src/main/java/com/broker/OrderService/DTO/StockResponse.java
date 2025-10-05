@@ -1,4 +1,4 @@
-package com.broker.portfolio.DTO;
+package com.broker.OrderService.DTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

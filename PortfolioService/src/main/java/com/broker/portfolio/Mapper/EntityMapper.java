@@ -5,18 +5,18 @@ import com.broker.portfolio.DTO.StockResponse;
 import com.broker.portfolio.Entity.Portfolio;
 import com.broker.portfolio.Entity.PortfolioStock;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 public class EntityMapper {
 
     public static StockResponse EntityToStockResponse(PortfolioStock stock, Long portfolioId){
         return new StockResponse(stock.getStockId(), stock.getStockSymbol(), stock.getQuantity(),
-                stock.getAveragePrice(), portfolioId);
+                stock.getAveragePrice(), stock.getLastUpdated() ,portfolioId);
     }
 
     public static PortfolioResponse EntityToPortfolioResponse(Portfolio portfolio){
-        List<StockResponse> stockList = new ArrayList<>();
+        Set<StockResponse> stockList = new HashSet<>();
         for(PortfolioStock stock : portfolio.getStocks()){
             stockList.add(EntityToStockResponse(stock,portfolio.getPortfolioId()));
         }

@@ -7,7 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.Instant;
-import java.util.List;
+import java.util.Set;
 
 @Entity
 @Data
@@ -24,5 +24,5 @@ public class Portfolio {
     private String email;
     private Instant lastUpdated;
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true ,fetch = FetchType.LAZY, mappedBy = "portfolio")
-    private List<PortfolioStock> stocks;
+    private Set<PortfolioStock> stocks;
 }
