@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -46,20 +47,49 @@ public class PortfolioServiceImpl implements PortfolioService {
                 .collect(Collectors.toSet());
     }
     @Override
-    public void addStocksToPortfolio(String email, List<PortfolioStock> newStocksList){
-        Optional<Portfolio> portfolio = portfolioRepository.findByEmailWithStocks(email);
-        if(portfolio.isEmpty()){
-            throw new RuntimeException("Portfolio with the email " + email + " not found");
+    @Transactional
+    public void addStocksToPortfolio(String email, List<PortfolioStock> incoming) {
+        Portfolio p = portfolioRepository.findByEmailWithStocks(email)
+                .orElseThrow(() -> new RuntimeException("Portfolio with the email " + email + " not found"));
+
+        Map<String, PortfolioStock> bySym = p.getStocks().stream()
+                .collect(Collectors.toMap(PortfolioStock::getStockSymbol, Function.identity()));
+
+        Map<String, Integer> addQty = new HashMap<>();
+        Map<String, Double> addCost = new HashMap<>(); //Two maps to deal with multiple entries of a symbol
+        for (PortfolioStock s : incoming) {
+            addQty.merge(s.getStockSymbol(), s.getQuantity(), Integer::sum);
+            addCost.merge(s.getStockSymbol(), s.getAveragePrice() * s.getQuantity(), Double::sum);
         }
-        double newPortfolioValue = portfolio.get().getTotalValue();
-        for (PortfolioStock stock : newStocksList) {
-            newPortfolioValue += (stock.getAveragePrice()*stock.getQuantity());
-            stock.setPortfolio(portfolio.get());
-            portfolio.get().getStocks().add(stock);
-        }
-        portfolio.get().setTotalValue(newPortfolioValue);
-        portfolio.get().setLastUpdated(Instant.now());
-        portfolioRepository.save(portfolio.get());
+
+        Instant now = Instant.now();
+        addQty.forEach((sym, qty) -> {
+            double addAvg = addCost.get(sym) / qty;
+            PortfolioStock ps = bySym.get(sym);
+            if (ps != null) {
+                int newQty = ps.getQuantity() + qty;
+                double newAvg = (ps.getAveragePrice() * ps.getQuantity() + addAvg * qty) / newQty;
+                ps.setQuantity(newQty);
+                ps.setAveragePrice(newAvg);
+                ps.setLastUpdated(now);
+            } else {
+                PortfolioStock created = PortfolioStock.builder()
+                        .stockSymbol(sym)
+                        .quantity(qty)
+                        .averagePrice(addAvg)
+                        .lastUpdated(now)
+                        .portfolio(p)
+                        .build();
+
+                p.getStocks().add(created);
+            }
+        });
+
+        p.setTotalValue(p.getStocks().stream()
+                .mapToDouble(s -> s.getAveragePrice() * s.getQuantity()).sum()); //recompute to avoid drift
+        p.setLastUpdated(now);
+
+        portfolioRepository.save(p);
     }
     @Override
     public void deletePortfolioById(Long portfolioId) {

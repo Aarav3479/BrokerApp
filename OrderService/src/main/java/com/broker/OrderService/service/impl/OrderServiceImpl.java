@@ -6,14 +6,10 @@ import com.broker.OrderService.FeignClient.PortfolioClient;
 import com.broker.OrderService.mapper.OrderMapper;
 import com.broker.OrderService.repository.OrderRepository;
 import com.broker.OrderService.service.OrderService;
-import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.time.Instant;
 import java.util.List;
@@ -31,14 +27,13 @@ public class OrderServiceImpl implements OrderService {
     private KafkaTemplate<String, OrderPlacedEvent> kafkaTemplate;
 
     @Override
-    @CircuitBreaker(name = "PortfolioCircuitBreaker", fallbackMethod = "fallbackResponse")
     public OrderResponse placeOrder(OrderRequest request) {
         PortfolioResponse portfolio = portfolioClient.getPortfolioWithEmail(request.getEmail());
         if(request.getType() == Order.OrderType.SELL){
             StockResponse stockResponse = portfolio.getStocks().stream()
-                                               .filter(s -> s.getStockSymbol().equals(request.getStockSymbol()))
-                                               .findAny()
-                                               .orElseThrow();
+                    .filter(s -> s.getStockSymbol().equals(request.getStockSymbol()))
+                    .findAny()
+                    .orElseThrow();
             if(stockResponse.getQuantity() < request.getQuantity()){
                 throw new RuntimeException("Cannot place sell order for " + request.getStockSymbol() + " above " + stockResponse.getQuantity() + " stocks");
             }
@@ -52,14 +47,7 @@ public class OrderServiceImpl implements OrderService {
         kafkaTemplate.send("order-placed", event);
         return OrderMapper.toResponse(saved);
     }
-    public OrderResponse fallbackResponse(OrderRequest request, Exception ex) {
-        throw new RuntimeException("Service unavailable: " + ex.getMessage());
-    }
-    @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<String> handleException(RuntimeException ex) {
-        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
-                             .body(ex.getMessage());
-    }
+
     @Override
     public List<OrderResponse> getAllOrders() {
         return orderRepository.findAll().stream()
