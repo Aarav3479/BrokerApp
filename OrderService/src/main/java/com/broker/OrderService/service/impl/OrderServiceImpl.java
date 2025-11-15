@@ -31,9 +31,9 @@ public class OrderServiceImpl implements OrderService {
         PortfolioResponse portfolio = portfolioClient.getPortfolioWithEmail(request.getEmail());
         if(request.getType() == Order.OrderType.SELL){
             StockResponse stockResponse = portfolio.getStocks().stream()
-                                               .filter(s -> s.getStockSymbol().equals(request.getStockSymbol()))
-                                               .findAny()
-                                               .orElseThrow();
+                    .filter(s -> s.getStockSymbol().equals(request.getStockSymbol()))
+                    .findAny()
+                    .orElseThrow();
             if(stockResponse.getQuantity() < request.getQuantity()){
                 throw new RuntimeException("Cannot place sell order for " + request.getStockSymbol() + " above " + stockResponse.getQuantity() + " stocks");
             }

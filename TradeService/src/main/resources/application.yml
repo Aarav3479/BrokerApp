@@ -20,8 +20,21 @@ spring:
     init:
       mode: always
       schema-locations: classpath:sql/schema.sql
-logging:
-  file:
-    name: logs/app.log
-  level:
-    root: INFO
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+    fetch-registry: true
+    register-with-eureka: true
+  instance:
+    prefer-ip-address: true
+    lease-renewal-interval-in-seconds: 10
+    lease-expiration-duration-in-seconds: 30
+    metadata-map:
+      instanceId: ${spring.application.name}:${spring.application.instance-id:${random.value}}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics

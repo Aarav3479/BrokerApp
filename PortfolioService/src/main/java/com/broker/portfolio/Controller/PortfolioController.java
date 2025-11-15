@@ -2,10 +2,8 @@ package com.broker.portfolio.Controller;
 
 import com.broker.portfolio.DTO.PortfolioResponse;
 import com.broker.portfolio.Entity.PortfolioStock;
-import com.broker.portfolio.repository.PortfolioRepository;
 import com.broker.portfolio.service.PortfolioService;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
