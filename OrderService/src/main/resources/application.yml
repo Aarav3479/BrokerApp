@@ -29,6 +29,19 @@ eureka:
     metadata-map:
       instanceId: ${spring.application.name}:${spring.application.instance-id:${random.value}}
 
+resilience4j:
+  circuit breaker:
+    instances:
+      PortfolioCircuitBreaker:
+        registerHealthIndicator: true
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 5
+        failureRateThreshold: 50
+        slowCallRateThreshold: 80
+        slowCallDurationThreshold: 10000
+        waitDurationInOpenState: 60000
+        permittedNumberOfCallsInHalfOpenState: 3
+        automaticTransitionFromOpenToHalfOpenEnabled: true
 management:
   endpoints:
     web:
