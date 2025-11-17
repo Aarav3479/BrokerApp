@@ -10,4 +10,5 @@ public interface PortfolioClient {
 
     @GetMapping("/{email}")
     PortfolioResponse getPortfolioWithEmail(@PathVariable String email);
+
 }
