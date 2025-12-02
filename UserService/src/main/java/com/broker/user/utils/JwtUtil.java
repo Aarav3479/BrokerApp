@@ -42,7 +42,7 @@ public class JwtUtil {
     }
 
     public String generateToken(String username) {
-        Map<String, Object> claims = new HashMap<>(); //We can pass any extra headers here
+        Map<String, Object> claims = new HashMap<>();
         return createToken(claims, username);
     }
 
