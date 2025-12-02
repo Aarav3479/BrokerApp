@@ -6,20 +6,14 @@ import com.broker.user.DTO.RegistrationDTO.RegisterRequest;
 import com.broker.user.DTO.UserProfileDTO.UpdateUserRequest;
 import com.broker.user.DTO.UserProfileDTO.UserResponse;
 import com.broker.user.services.UserService;
-import com.broker.user.services.impl.CustomUserDetailsService;
-import com.broker.user.utils.JwtUtil;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import lombok.extern.slf4j.XSlf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 

@@ -2,7 +2,7 @@ server:
   port: 8084
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/portfolio_service
+    url: jdbc:postgresql://postgres:5432/portfolio_service
     username: postgres
     password: root1
   jpa:

@@ -5,8 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Entity
 @Table(name = "users")
 @Data
@@ -21,6 +19,4 @@ public class User {
     @Column(unique = true)
     private String email;
     private String password;
-    private List<String> roles;
-//    private boolean verified;
 }
