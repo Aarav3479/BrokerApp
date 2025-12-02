@@ -1,0 +1,132 @@
+services:
+  kafka:
+    image: apache/kafka-native
+    ports:
+      - "9093:9093"
+    environment:
+      KAFKA_LISTENERS: CONTROLLER://localhost:9091,DOCKER://0.0.0.0:9092,HOST://0.0.0.0:9093
+      KAFKA_ADVERTISED_LISTENERS: DOCKER://kafka:9092,HOST://localhost:9093
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,DOCKER:PLAINTEXT,HOST:PLAINTEXT
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@localhost:9091
+      KAFKA_INTER_BROKER_LISTENER_NAME: DOCKER
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
+  kafka-ui:
+    image: kafbat/kafka-ui:main
+    ports:
+      - 8085:8085
+    environment:
+      DYNAMIC_CONFIG_ENABLED: "true"
+      KAFKA_CLUSTERS_0_NAME: local
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092
+    depends_on:
+      - kafka
+
+  postgres:
+    image: postgres:16
+    container_name: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root1
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./seed-sql:/docker-entrypoint-initdb.d/:ro
+      - PgData:/var/lib/postgresql/data
+
+  discovery-service:
+    container_name: discovery-container
+    build:
+      context: ./DiscoveryService
+      dockerfile: Dockerfile
+    image: discovery-service:latest
+    restart: unless-stopped
+    ports:
+      - "8761:8761"
+
+  user-service:
+    container_name: user-container
+    build:
+      context: ./UserService
+      dockerfile: Dockerfile
+    image: user-service:latest
+    restart: unless-stopped
+    ports:
+      - "8081:8081"
+    environment:
+      SPRING_DATASOURCE_URL: "jdbc:postgresql://postgres:5432/user_service"
+      SPRING_DATASOURCE_USERNAME: "postgres"
+      SPRING_DATASOURCE_PASSWORD: "root1"
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: "http://discovery-service:8761/eureka/"
+      KAFKA_BOOTSTRAP_SERVERS: "kafka:9092"
+    depends_on:
+      - discovery-service
+      - kafka
+      - postgres
+
+  order-service:
+    container_name: order-container
+    build:
+      context: ./OrderService
+      dockerfile: Dockerfile
+    image: order-service:latest
+    restart: unless-stopped
+    ports:
+      - "8082:8082"
+    environment:
+      SPRING_DATASOURCE_URL: "jdbc:postgresql://postgres:5432/order_service"
+      SPRING_DATASOURCE_USERNAME: "postgres"
+      SPRING_DATASOURCE_PASSWORD: "root1"
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: "http://discovery-service:8761/eureka/"
+      KAFKA_BOOTSTRAP_SERVERS: "kafka:9092"
+    depends_on:
+      - discovery-service
+      - kafka
+      - postgres
+
+  trade-service:
+    container_name: trade-container
+    build:
+      context: ./TradeService
+      dockerfile: Dockerfile
+    image: trade-service:latest
+    restart: unless-stopped
+    ports:
+      - "8083:8083"
+    environment:
+      SPRING_DATASOURCE_URL: "jdbc:postgresql://postgres:5432/trade_service"
+      SPRING_DATASOURCE_USERNAME: "postgres"
+      SPRING_DATASOURCE_PASSWORD: "root1"
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: "http://discovery-service:8761/eureka/"
+      KAFKA_BOOTSTRAP_SERVERS: "kafka:9092"
+    depends_on:
+      - discovery-service
+      - kafka
+      - postgres
+
+  portfolio-service:
+    container_name: portfolio-container
+    build:
+      context: ./PortfolioService
+      dockerfile: Dockerfile
+    image: portfolio-service:latest
+    restart: unless-stopped
+    ports:
+      - "8084:8084"
+    environment:
+      SPRING_DATASOURCE_URL: "jdbc:postgresql://postgres:5432/portfolio_service"
+      SPRING_DATASOURCE_USERNAME: "postgres"
+      SPRING_DATASOURCE_PASSWORD: "root1"
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: "http://discovery-service:8761/eureka/"
+      KAFKA_BOOTSTRAP_SERVERS: "kafka:9092"
+    depends_on:
+      - discovery-service
+      - kafka
+      - postgres
+
+volumes:
+  PgData:

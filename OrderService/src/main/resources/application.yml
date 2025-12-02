@@ -2,7 +2,7 @@ server:
   port: 8082
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/order_service
+    url: jdbc:postgresql://postgres:5432/order_service
     username: postgres
     password: root1
   jpa:

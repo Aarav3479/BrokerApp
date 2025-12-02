@@ -2,7 +2,7 @@ server:
   port: 8083
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/trade_service
+    url: jdbc:postgresql://postgres:5432/trade_service
     username: postgres
     password: root1
   jpa:
@@ -16,10 +16,6 @@ spring:
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       properties:
         spring.json.trusted.packages: '*'
-  sql:
-    init:
-      mode: always
-      schema-locations: classpath:sql/schema.sql
 eureka:
   client:
     service-url:
