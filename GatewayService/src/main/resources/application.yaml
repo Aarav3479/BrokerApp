@@ -1,0 +1,43 @@
+server:
+  port: 8086
+
+spring:
+  application:
+    name: GatewayService
+  cloud:
+    gateway:
+      mvc:
+        routes:
+          - id: user_service
+            uri: http://localhost:8081
+            predicates:
+              - Path=/api/users/register
+logging:
+  level:
+    root: INFO
+    org.springframework.web: DEBUG
+    org.springframework.cloud.gateway: DEBUG
+    com.broker.GatewayService: DEBUG
+    reactor.netty.http.client: DEBUG
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://discovery-service:8761/eureka/
+    fetch-registry: true
+    register-with-eureka: true
+  instance:
+    prefer-ip-address: true
+    lease-renewal-interval-in-seconds: 10
+    lease-expiration-duration-in-seconds: 30
+    metadata-map:
+      instanceId: ${spring.application.name}:${spring.application.instance-id:${random.value}}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,gateway,metrics,loggers,env
+  endpoint:
+    gateway:
+      enabled: true
