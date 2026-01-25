@@ -128,5 +128,19 @@ services:
       - kafka
       - postgres
 
+  gateway-service:
+    container_name: gateway-container
+    build:
+      context: ./GatewayService
+      dockerfile: Dockerfile
+    image: gateway-service:latest
+    restart: unless-stopped
+    ports:
+      - "8086:8086"
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: "http://discovery-service:8761/eureka/"
+    depends_on:
+      - discovery-service
+
 volumes:
   PgData:

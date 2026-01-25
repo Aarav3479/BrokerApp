@@ -28,7 +28,7 @@ ARG JAR_FILE=/usr/app/target/*.jar
 
 COPY --from=build --chown=appuser:appgroup ${JAR_FILE} /app/runner.jar
 
-EXPOSE 8080
+EXPOSE 8081
 
 USER appuser
 ENTRYPOINT ["java","-jar","/app/runner.jar"]
