@@ -101,7 +101,7 @@ Although most inter-service communication is event-driven, Eureka supports the s
 
 ## Docker & Local Development
 
-All services, along with Kafka and PostgreSQL, are orchestrated using **Docker Compose**, enabling a production-like local environment.
+All services, along with Kafka and PostgreSQL, are orchestrated using **Docker Compose**, enabling a production-like local environment. **Note:** For simplicity in local development, the JWT signing key is configured at the application level; in a production setup, this would be securely managed via environment variables or a dedicated secrets management service.
 
 ### Docker Compose includes:
 - **Kafka (KRaft mode)** – No Zookeeper dependency
