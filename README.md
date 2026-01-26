@@ -114,10 +114,18 @@ Each microservice:
 - Exposes its own port
 - Uses environment variables for database, Kafka, and Eureka configuration
 
-### Running the project locally
+## Running the Project Locally
+
+This project uses **Docker Compose** to spin up all microservices along with the required infrastructure.
+
+### Prerequisites
+- Docker
+- Docker Compose
+
+### Steps to Run
+
 ```bash
 docker compose up --build
 
-Once started, you can view the Eureka Dashboard at http://localhost:8761
 
-Each Microservice Readme is available inside the respective folders
+
