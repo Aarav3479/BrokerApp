@@ -35,7 +35,7 @@ public class OrderController {
     }
 
     @DeleteMapping
-    public ResponseEntity<String> deleteAllTrades(){
+    public ResponseEntity<String> deleteAllOrders(){
         orderService.deleteAllOrders();
         return ResponseEntity.ok("All Orders deleted successfully");
     }
