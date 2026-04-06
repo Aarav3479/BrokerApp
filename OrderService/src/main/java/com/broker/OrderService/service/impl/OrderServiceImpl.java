@@ -70,6 +70,7 @@ public class OrderServiceImpl implements OrderService {
     public void deleteAllOrders(){
         orderRepository.deleteAll();
     }
+
     public OrderResponse fallbackResponse(OrderRequest request, Throwable throwable ) {
 
         log.error("Fallback triggered due to: {}", throwable.toString());
